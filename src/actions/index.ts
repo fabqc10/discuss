@@ -1,3 +1,4 @@
+// This is optional but very recommendable to have
 "use server";
 
 import * as auth from "@/auth";
