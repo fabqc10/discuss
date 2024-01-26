@@ -12,19 +12,41 @@ import {
 
 const Header = async () => {
   const session = await auth();
+
+  let authContent: React.ReactNode;
+
+  if (session?.user) {
+    authContent = (
+      <div>
+        <Avatar src={session.user.image || ""} />
+      </div>
+    );
+  } else {
+    authContent = (
+      <>
+        <NavbarItem>
+          <Button type="submit" color="secondary" variant="bordered">
+            Sign In
+          </Button>
+        </NavbarItem>
+        <NavbarItem>
+          <Button type="submit" color="primary" variant="flat"> Sign Up</Button>
+        </NavbarItem>
+      </>
+    );
+  }
+  
   return (
     <Navbar className="shadow mb-6">
       <NavbarBrand>
-        <Link href={"/"}>Discuss</Link>
+        <Link href={"/"} className="font-bold">Discuss</Link>
       </NavbarBrand>
       <NavbarContent justify="center">
         <NavbarItem>
           <Input />
         </NavbarItem>
       </NavbarContent>
-      <NavbarContent justify="end">
-        {session?.user ? <div>Signed In</div> : <div>Signed Out</div>}
-      </NavbarContent>
+      <NavbarContent justify="end">{authContent}</NavbarContent>
     </Navbar>
   );
 };
