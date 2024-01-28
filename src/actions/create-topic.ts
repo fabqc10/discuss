@@ -22,6 +22,7 @@ interface CreateTopicFormState {
 }
 
 export async function createTopic(formState: CreateTopicFormState, formData: FormData): Promise<CreateTopicFormState> {
+    await new Promise((resolve) => setTimeout(resolve,2500));
     const session = await auth();
     const result = createTopicSchema.safeParse({
         name: formData.get("name"),
