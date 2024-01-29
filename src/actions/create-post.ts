@@ -9,7 +9,7 @@ import { auth } from "@/auth";
 import paths from "@/paths";
 
 const createFormSchema = z.object({
-    title: z.string().min(3).regex(/^[a-z-]+$/, { message: "Must be lowercase letters or dashes without spaces" }),
+    title: z.string().min(3),
     content: z.string().min(10)
 })
 
@@ -46,41 +46,41 @@ export async function createPost(slug: string, formState: CreatePostFormState, f
         where: { slug }
     })
 
-    if(!topic){
+    if (!topic) {
         return {
             errors: {
-                _form:["Can not find Topic"]
+                _form: ["Can not find Topic"]
             }
         }
     }
 
-    return {
-        errors: {}
+
+    let post: Post;
+    try {
+        post = await db.post.create({
+            data: {
+                title: result.data.title,
+                content: result.data.content,
+                userId: session.user.id,
+                topicId: topic.id
+            }
+        })
+
+    } catch (err: unknown) {
+        if (err instanceof Error) {
+            return {
+                errors: {
+                    _form: [err.message]
+                }
+            }
+        } else {
+            return {
+                errors: {
+                    _form: ["Failed to create Post"]
+                }
+            }
+        }
     }
-
-    // let post: Post;
-    // try {
-    //     post = await db.post.create({
-    //         data: {
-    //             title: result.data.title,
-    //             content: result.data.content
-    //         }
-    //     })
-
-    // } catch (err:unknown) {
-    //     if(err instanceof Error){
-    //         return {
-    //             errors: {
-    //                 _form:[err.message]
-    //             }
-    //         }
-    //     } else {
-    //         return {
-    //             errors: {
-    //                 _form: ["Something went wrong"]
-    //             }
-    //         }
-    //     }
-    // }
-    //TODO: Revalidate de topic show page
+    revalidatePath(paths.topicShow(slug));
+    redirect(paths.postShow(slug, post.id));
 }
