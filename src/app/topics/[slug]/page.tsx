@@ -1,5 +1,6 @@
+import PostList from "@/components/posts/post-list";
+import { fetchPostsByTopicSlug } from "@/db/queries/posts";
 import PostCreateForm from "@/components/posts/post-create-form";
-import React from "react";
 interface TopicShowPageProps {
   params: {
     slug: string;
@@ -12,6 +13,7 @@ const TopicShowPage = ({ params }: TopicShowPageProps) => {
     <div className="grid grid-cols-4 gap-4 p-4">
       <div className="col-span-3">
         <h1 className="text-2xl font-bold mb2">{slug}</h1>
+        <PostList fetchData={() => fetchPostsByTopicSlug(slug)}/>
       </div>
       <div>
         <PostCreateForm slug={slug} />
