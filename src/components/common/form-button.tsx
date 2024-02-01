@@ -11,7 +11,7 @@ const FormButton = ({ children }: FormButtonProps) => {
   const { pending } = useFormStatus();
   return (
     <Button type="submit" isLoading={pending}>
-      {!pending?children:""}
+      {!pending ? children : ""}
     </Button>
   );
 };
